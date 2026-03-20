@@ -33,9 +33,12 @@ router.get("/freeslots", async (req, res) => {
         "Friday": ["08:00 AM", "08:50 AM", "09:40 AM", "10:30 AM", "11:20 AM", "12:10 PM", "01:00 PM", "01:50 PM", "02:40 PM", "03:30 PM", "04:20 PM"]
     }
 
+    let validBatches = [];
+
     batches.forEach(batch => {
         const batchTimetable = timetable[batch.toUpperCase()];
         if (batchTimetable) {
+            validBatches.push(batch);
             for (const day in batchTimetable) {
                 const classes = batchTimetable[day];
                 for (const [time, subject] of Object.entries(classes)) {
@@ -47,6 +50,10 @@ router.get("/freeslots", async (req, res) => {
             }
         }
     });
+
+    if (validBatches.length === 0) {
+        return res.status(404).json({ status: "error", message: "No valid batches found" });
+    }
 
     res.status(200).json({ status: "success", data: slots });
 });
