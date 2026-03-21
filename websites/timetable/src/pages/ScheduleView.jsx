@@ -107,6 +107,9 @@ export default function ScheduleView() {
         backgroundColor: "#09090b",
         pixelRatio: 2,
         skipFonts: false,
+        fetchRequest: {
+          cache: 'no-cache',
+        },
         style: {
           transform: 'none',
           opacity: '1'
@@ -168,7 +171,7 @@ export default function ScheduleView() {
   };
 
   // Shared generic cell render function
-  const renderCellContent = (subjectList, isDesktop = true, isExpanded = false, onEdit = null) => {
+  const renderCellContent = (subjectList, isDesktop = true, isExpanded = false, onEdit = null, isCaptureOnly = false) => {
     if (!subjectList) return null;
 
     let code, loc, name, type;
@@ -193,10 +196,10 @@ export default function ScheduleView() {
               </span>
             </div>
 
-            <div 
+            <div
               className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[240px] px-4 py-4 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col justify-center items-center text-center backdrop-blur-3xl border border-white/20 bg-zinc-950`}
             >
-               <div className="flex flex-col justify-center items-center gap-1.5 mb-3 opacity-90 w-full">
+              <div className="flex flex-col justify-center items-center gap-1.5 mb-3 opacity-90 w-full">
                 <div className={`font-bold text-[12px] uppercase tracking-wider break-all text-center w-full ${getTypeColors(type).split(' ').find(c => c.startsWith('text-'))}`}>{code}</div>
                 {loc && (
                   <div className={`text-[11px] tracking-wide flex items-start justify-center gap-1.5 w-full ${getTypeColors(type).split(' ').find(c => c.startsWith('text-'))}`}>
@@ -209,10 +212,10 @@ export default function ScheduleView() {
               <span className={`text-[10px] px-2 py-1 rounded shadow-sm whitespace-nowrap uppercase tracking-wider shrink-0 mb-4 ${getTypeBadgeColors(type)}`}>
                 {type}
               </span>
-              <button 
+              <button
                 onClick={(e) => {
-                   e.stopPropagation();
-                   if (onEdit) onEdit();
+                  e.stopPropagation();
+                  if (onEdit) onEdit();
                 }}
                 className="text-[11px] font-semibold bg-white text-black px-4 py-1.5 rounded hover:bg-white/90 transition-all shadow active:scale-95 w-full shrink-0"
               >
@@ -225,16 +228,16 @@ export default function ScheduleView() {
 
       return (
         <div className={`flex flex-col h-full w-full p-1.5 rounded-md transition-all justify-center items-center text-center overflow-hidden ${getTypeColors(type)}`}>
-          <div className="flex justify-center items-center gap-1.5 mb-0.5 opacity-80 flex-wrap w-full">
-            <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-full">{code}</span>
+          <div className="flex flex-col justify-center items-center gap-0.5 mb-1 opacity-90 w-full">
+            <span className="font-bold text-[9px] uppercase tracking-wider line-clamp-2 break-all w-full leading-tight">{code}</span>
             {loc && (
-              <span className="text-[9px] tracking-wide inline-flex items-center gap-1 truncate max-w-full">
+              <span className="text-[9px] tracking-wide flex items-center justify-center gap-1 w-full opacity-80">
                 <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0" />
-                <span className="truncate">{loc}</span>
+                <span className="truncate max-w-full">{loc}</span>
               </span>
             )}
           </div>
-          <span className="font-semibold text-[11px] leading-tight mb-1 line-clamp-2 w-full break-words" title={name}>{name}</span>
+          <span className="font-semibold text-[11px] leading-tight mb-1 line-clamp-3 w-full break-words" title={name}>{name}</span>
           <span className={`text-[8px] px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap uppercase tracking-wider shrink-0 ${getTypeBadgeColors(type)}`}>
             {type}
           </span>
@@ -264,7 +267,7 @@ export default function ScheduleView() {
   const renderDesktopTable = (refProps, isCaptureOnly = false) => (
     <div
       {...refProps}
-      className={`w-full ${!isCaptureOnly ? "overflow-x-auto custom-scrollbar bg-black/40 rounded-2xl p-4 shadow-2xl glass-card border-none" : "bg-[#09090b] text-white p-6 pb-4 w-[1150px] block"}`}
+      className={`${!isCaptureOnly ? "w-full overflow-x-auto custom-scrollbar bg-black/40 rounded-2xl p-4 shadow-2xl glass-card border-none" : "bg-[#09090b] text-white p-6 pb-4 w-[1150px] min-w-[1150px] max-w-[1150px] block"}`}
     >
       <div className={`flex items-end justify-between pb-4 ${isCaptureOnly ? 'mb-6 border-b-2 border-white/10' : 'mb-4 border-b border-white/10'}`}>
         <div>
@@ -326,13 +329,14 @@ export default function ScheduleView() {
                   >
                     {subjectList ? (
                       renderCellContent(
-                        subjectList, 
-                        true, 
+                        subjectList,
+                        true,
                         (!isCaptureOnly && expandedCell === `${day}-${time}`),
                         () => {
                           setExpandedCell(null);
                           openSlotModal(day, time, subjectList);
-                        }
+                        },
+                        isCaptureOnly
                       )
                     ) : (
                       <div className={`flex items-center justify-center w-full h-full rounded-md border border-dashed border-white/10 text-white/10 ${!isCaptureOnly && "group-hover:text-white/30 group-hover:border-white/30 group-hover:bg-white/5"} transition-all min-h-[50px]`}>
