@@ -6,6 +6,7 @@ import BackgroundElements from "@/components/BackgroundElements";
 // Temporary placeholders for our cards until we implement them
 import ScheduleCard from "@/components/ScheduleCard";
 import FreeSlotsCard from "@/components/FreeSlotsCard";
+import CalendarCard from "@/components/CalendarCard";
 
 export function HomeSite() {
   return (
@@ -13,7 +14,7 @@ export function HomeSite() {
       <BackgroundElements />
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 pt-32 pb-16 flex flex-col items-center justify-center">
+      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 pt-32 pb-16 flex flex-col items-center justify-center">
         <div className="text-center space-y-4 mb-16">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60">
             Timetable & Free Slots
@@ -24,7 +25,8 @@ export function HomeSite() {
         </div>
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+          <CalendarCard />
           <ScheduleCard />
           <FreeSlotsCard />
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { ArrowLeft, Loader2, Users, ChevronDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -22,7 +22,8 @@ const TIMES = [
 
 export default function FreeSlotsView() {
   const location = useLocation();
-  const batches = location.state?.batches || [];
+  const rawBatches = location.state?.batches;
+  const batches = useMemo(() => rawBatches || [], [rawBatches]);
 
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);

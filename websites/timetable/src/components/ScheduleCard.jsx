@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, ChevronDown, Check, Loader2 } from "lucide-react";
 
@@ -42,11 +42,7 @@ export default function ScheduleCard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const types = useMemo(() => {
-    if (!Array.isArray(batches)) return ["All"];
-    const extractedTypes = batches.map(b => typeof b === 'string' ? b.replace(/[0-9]/g, '') : null).filter(Boolean);
-    return ["All", ...Array.from(new Set(extractedTypes))];
-  }, [batches]);
+
 
   const filteredBatches = Array.isArray(batches) ? batches.filter((b) => {
     if (typeof b !== 'string') return false;

@@ -171,7 +171,7 @@ export default function ScheduleView() {
   };
 
   // Shared generic cell render function
-  const renderCellContent = (subjectList, isDesktop = true, isExpanded = false, onEdit = null, isCaptureOnly = false) => {
+  const renderCellContent = (subjectList, isDesktop = true, isExpanded = false, onEdit = null) => {
     if (!subjectList) return null;
 
     let code, loc, name, type;

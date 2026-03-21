@@ -7,8 +7,8 @@ export const getGoogleAuthURL = async (req, res) => {
     }
 
     const { batch, operation } = req.body;
-    if (!batch || !operation) {
-        return res.status(400).json({ status: "error", message: "Batch and operation must be provided in the request body" });
+    if (!operation || (!batch && operation === "addToCalendar")) {
+        return res.status(400).json({ status: "error", message: "Invalid body request" });
     }
 
     if (!["addToCalendar", "resetCalendar"].includes(operation)) {
