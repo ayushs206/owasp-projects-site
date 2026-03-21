@@ -50,7 +50,7 @@ export default function CalendarCard() {
   }) : [];
 
   const handleApiCall = async (operation) => {
-    if (!selectedBatch) return;
+    if (operation === "addToCalendar" && !selectedBatch) return;
 
     setErrorMsg("");
     if (operation === "addToCalendar") setIsAdding(true);
@@ -179,7 +179,7 @@ export default function CalendarCard() {
           </button>
           <button
             onClick={() => handleApiCall('resetCalendar')}
-            disabled={!selectedBatch || isAdding || isResetting}
+            disabled={isAdding || isResetting}
             className="flex-1 py-3 px-4 bg-red-500/10 text-red-500 border border-red-500/20 font-bold rounded-xl hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] active:scale-[0.98] flex items-center justify-center gap-2"
           >
             {isResetting ? <Loader2 className="animate-spin" size={18} /> : <span>Reset</span>}

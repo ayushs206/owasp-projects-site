@@ -15,12 +15,12 @@ export const getGoogleAuthURL = async (req, res) => {
         return res.status(400).json({ status: "error", message: "Invalid operation. Please provide either 'addToCalendar' or 'resetCalendar'" });
     }
 
-    if (!timetable[batch.toUpperCase()]) {
+    if (operation === "addToCalendar" && !timetable[batch.toUpperCase()]) {
         return res.status(404).json({ status: "error", message: "Batch not found" });
     }
 
     try {
-        const url = await generateGoogleAuthURL(batch.toUpperCase(), operation);
+        const url = await generateGoogleAuthURL(batch ? batch.toUpperCase() : "ALL", operation);
         if (url) {
             res.status(200).json({ status: "success", data: url });
         }
