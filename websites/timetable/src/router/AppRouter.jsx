@@ -1,12 +1,14 @@
 import { Routes, Route } from "react-router-dom"
 import { HomeSite } from "@/pages/Home"
-import ResultViewer from "@/pages/ResultViewer"
+import ScheduleView from "@/pages/ScheduleView"
+import FreeSlotsView from "@/pages/FreeSlotsView"
 
 export default function AppRouter() {
     return (
         <Routes>
             <Route path="/" element={<HomeSite />} />
-            <Route path="/result" element={<ResultViewer />} />
+            <Route path="/schedule" element={<ScheduleView />} />
+            <Route path="/freeslots" element={<FreeSlotsView />} />
         </Routes>
     )
 }

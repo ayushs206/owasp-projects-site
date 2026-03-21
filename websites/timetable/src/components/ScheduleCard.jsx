@@ -46,7 +46,7 @@ export default function ScheduleCard() {
 
   const handleSelect = () => {
     if (selectedBatch) {
-      navigate(`/result?type=schedule&batch=${encodeURIComponent(selectedBatch)}`);
+      navigate(`/schedule?batch=${encodeURIComponent(selectedBatch)}`);
     }
   };
 

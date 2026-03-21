@@ -51,7 +51,7 @@ export default function FreeSlotsCard() {
 
   const handleSubmit = () => {
     if (selectedBatches.length >= 2 && selectedBatches.length <= 9) {
-      navigate("/result?type=freeslots", { state: { batches: selectedBatches } });
+      navigate("/freeslots", { state: { batches: selectedBatches } });
     }
   };
 
