@@ -54,8 +54,18 @@ export default function ScheduleView() {
   const [currentEditSlot, setCurrentEditSlot] = useState(null); // { day, time }
   const [modalFormData, setModalFormData] = useState({ code: "", location: "", name: "", type: "Lecture" });
 
+  const [expandedCell, setExpandedCell] = useState(null);
+
   const desktopTableRef = useRef(null);
   const hiddenTableRef = useRef(null); // For mobile capturing
+
+  useEffect(() => {
+    const handleClick = () => setExpandedCell(null);
+    if (expandedCell) {
+      window.addEventListener("click", handleClick);
+    }
+    return () => window.removeEventListener("click", handleClick);
+  }, [expandedCell]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -158,7 +168,7 @@ export default function ScheduleView() {
   };
 
   // Shared generic cell render function
-  const renderCellContent = (subjectList, isDesktop = true) => {
+  const renderCellContent = (subjectList, isDesktop = true, isExpanded = false, onEdit = null) => {
     if (!subjectList) return null;
 
     let code, loc, name, type;
@@ -170,19 +180,62 @@ export default function ScheduleView() {
     }
 
     if (isDesktop) {
+      if (isExpanded) {
+        return (
+          <>
+            <div className={`flex flex-col h-full w-full p-1.5 rounded-md transition-all justify-center items-center text-center overflow-hidden ${getTypeColors(type)}`}>
+              <div className="flex justify-center items-center gap-1.5 mb-0.5 opacity-80 flex-wrap w-full">
+                <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-full">{code}</span>
+              </div>
+              <span className="font-semibold text-[11px] leading-tight mb-1 line-clamp-2 w-full break-words">{name}</span>
+              <span className={`text-[8px] px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap uppercase tracking-wider shrink-0 ${getTypeBadgeColors(type)}`}>
+                {type}
+              </span>
+            </div>
+
+            <div 
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[240px] px-4 py-4 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col justify-center items-center text-center backdrop-blur-3xl border border-white/20 bg-zinc-950`}
+            >
+               <div className="flex flex-col justify-center items-center gap-1.5 mb-3 opacity-90 w-full">
+                <div className={`font-bold text-[12px] uppercase tracking-wider break-all text-center w-full ${getTypeColors(type).split(' ').find(c => c.startsWith('text-'))}`}>{code}</div>
+                {loc && (
+                  <div className={`text-[11px] tracking-wide flex items-start justify-center gap-1.5 w-full ${getTypeColors(type).split(' ').find(c => c.startsWith('text-'))}`}>
+                    <div className="w-1.5 h-1.5 rounded-full bg-current opacity-50 shrink-0 mt-[5px]" />
+                    <span className="break-all text-center min-w-0">{loc}</span>
+                  </div>
+                )}
+              </div>
+              <div className={`font-bold text-[14px] leading-snug mb-3 w-full break-words whitespace-normal text-center ${getTypeColors(type).split(' ').find(c => c.startsWith('text-'))}`}>{name}</div>
+              <span className={`text-[10px] px-2 py-1 rounded shadow-sm whitespace-nowrap uppercase tracking-wider shrink-0 mb-4 ${getTypeBadgeColors(type)}`}>
+                {type}
+              </span>
+              <button 
+                onClick={(e) => {
+                   e.stopPropagation();
+                   if (onEdit) onEdit();
+                }}
+                className="text-[11px] font-semibold bg-white text-black px-4 py-1.5 rounded hover:bg-white/90 transition-all shadow active:scale-95 w-full shrink-0"
+              >
+                Edit Slot
+              </button>
+            </div>
+          </>
+        );
+      }
+
       return (
-        <div className={`flex flex-col h-full w-full p-1.5 rounded-md transition-all justify-center items-center text-center ${getTypeColors(type)}`}>
-          <div className="flex justify-center items-center gap-1.5 mb-0.5 opacity-80 flex-wrap">
-            <span className="font-bold text-[9px] uppercase tracking-wider">{code}</span>
+        <div className={`flex flex-col h-full w-full p-1.5 rounded-md transition-all justify-center items-center text-center overflow-hidden ${getTypeColors(type)}`}>
+          <div className="flex justify-center items-center gap-1.5 mb-0.5 opacity-80 flex-wrap w-full">
+            <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-full">{code}</span>
             {loc && (
-              <span className="text-[9px] tracking-wide inline-flex items-center gap-1">
-                <div className="w-1 h-1 rounded-full bg-current opacity-50" />
-                {loc}
+              <span className="text-[9px] tracking-wide inline-flex items-center gap-1 truncate max-w-full">
+                <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0" />
+                <span className="truncate">{loc}</span>
               </span>
             )}
           </div>
-          <span className="font-semibold text-[11px] leading-tight mb-1" title={name}>{name}</span>
-          <span className={`text-[8px] px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap uppercase tracking-wider ${getTypeBadgeColors(type)}`}>
+          <span className="font-semibold text-[11px] leading-tight mb-1 line-clamp-2 w-full break-words" title={name}>{name}</span>
+          <span className={`text-[8px] px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap uppercase tracking-wider shrink-0 ${getTypeBadgeColors(type)}`}>
             {type}
           </span>
         </div>
@@ -191,17 +244,17 @@ export default function ScheduleView() {
       // Mobile List view rendering
       return (
         <div className={`flex flex-col w-full p-3 border rounded-lg ${getTypeColors(type)}`}>
-          <div className="flex justify-between items-start mb-1">
-            <span className="font-bold text-xs uppercase tracking-wider">{code}</span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap ${getTypeBadgeColors(type)}`}>
+          <div className="flex justify-between items-start mb-1 gap-3">
+            <span className="font-bold text-xs uppercase tracking-wider break-all min-w-0 flex-1">{code}</span>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 ${getTypeBadgeColors(type)}`}>
               {type}
             </span>
           </div>
-          <span className="font-semibold text-sm leading-tight mb-2">{name}</span>
-          <span className="text-xs opacity-80 mt-auto truncate flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-current opacity-50" />
-            {loc || "TBA"}
-          </span>
+          <div className="font-semibold text-sm leading-snug mb-2 break-words whitespace-normal w-full">{name}</div>
+          <div className="text-xs opacity-80 mt-auto flex items-start gap-1.5 w-full">
+            <div className="w-1.5 h-1.5 rounded-full bg-current opacity-50 shrink-0 mt-[4px]" />
+            <span className="break-all min-w-0 flex-1">{loc || "TBA"}</span>
+          </div>
         </div>
       );
     }
@@ -253,13 +306,34 @@ export default function ScheduleView() {
                 return (
                   <td
                     key={time}
-                    onClick={() => !isCaptureOnly && openSlotModal(day, time, subjectList)}
-                    className={`p-1.5 border-b border-r border-white/5 text-center transition-all h-[100px] w-[90px] align-top
+                    onClick={(e) => {
+                      if (isCaptureOnly) return;
+                      e.stopPropagation();
+                      if (!subjectList) {
+                        openSlotModal(day, time, subjectList);
+                        return;
+                      }
+                      const cellId = `${day}-${time}`;
+                      if (expandedCell === cellId) {
+                        setExpandedCell(null);
+                      } else {
+                        setExpandedCell(cellId);
+                      }
+                    }}
+                    className={`relative p-1.5 border-b border-r border-white/5 text-center transition-all h-[100px] w-[90px] align-top
                       ${!isCaptureOnly ? "cursor-pointer hover:bg-white/5" : ""} 
                     `}
                   >
                     {subjectList ? (
-                      renderCellContent(subjectList, true)
+                      renderCellContent(
+                        subjectList, 
+                        true, 
+                        (!isCaptureOnly && expandedCell === `${day}-${time}`),
+                        () => {
+                          setExpandedCell(null);
+                          openSlotModal(day, time, subjectList);
+                        }
+                      )
                     ) : (
                       <div className={`flex items-center justify-center w-full h-full rounded-md border border-dashed border-white/10 text-white/10 ${!isCaptureOnly && "group-hover:text-white/30 group-hover:border-white/30 group-hover:bg-white/5"} transition-all min-h-[50px]`}>
                         {!isCaptureOnly ? <Plus size={16} /> : <span className="opacity-0 select-none">.</span>}
@@ -350,7 +424,7 @@ export default function ScheduleView() {
                         <ChevronDown size={18} className={`text-white/50 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                       </button>
 
-                      <div className={`transition-all duration-300 overflow-hidden ${isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}`}>
+                      <div className={`transition-all duration-500 overflow-hidden ${isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="p-4 bg-black/20 border-t border-white/5 flex flex-col gap-3">
                           {/* List Filled Slots */}
                           {daySlots.map(([time, slotData]) => (
@@ -359,7 +433,7 @@ export default function ScheduleView() {
                                 <span className="font-bold text-white/90 text-sm">{time.split(' ')[0]}</span>
                                 <span className="text-[10px] text-white/50 tracking-wider">{time.split(' ')[1]}</span>
                               </div>
-                              <div className="flex-1">
+                              <div className="flex-1 min-w-0">
                                 {renderCellContent(slotData, false)}
                               </div>
                             </div>
