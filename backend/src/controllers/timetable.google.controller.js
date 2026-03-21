@@ -29,3 +29,31 @@ export const getGoogleAuthURL = async (req, res) => {
         res.status(500).json({ status: "error", message: "Failed to generate Google Auth URL" });
     }
 }
+
+import { handleGoogleCallback } from "../services/google.apis.js";
+
+export const googleAuthCallback = async (req, res) => {
+    const { code, state, error } = req.query;
+    const frontendUrl = process.env.TIMETABLE_FRONTEND_URL || "http://localhost:3000";
+
+    if (error) {
+        console.error("Google Auth Error:", error);
+        return res.redirect(`${frontendUrl}/calendar?result=fail`);
+    }
+
+    if (!code || !state) {
+        return res.redirect(`${frontendUrl}/calendar?result=fail`);
+    }
+
+    try {
+        const decodedState = JSON.parse(state);
+        const { batch, operation } = decodedState;
+
+        await handleGoogleCallback(code, batch, operation);
+
+        res.redirect(`${frontendUrl}/calendar?result=success`);
+    } catch (err) {
+        console.error("Error handling Google callback:", err);
+        res.redirect(`${frontendUrl}/calendar?result=fail`);
+    }
+}

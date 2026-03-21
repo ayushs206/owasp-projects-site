@@ -1,10 +1,11 @@
 import { Router } from "express";
 const router = Router();
 import { timetable } from "../db/timetable.js";
-import { getGoogleAuthURL } from "../controllers/timetable.google.controller.js";
+import { getGoogleAuthURL, googleAuthCallback } from "../controllers/timetable.google.controller.js";
 
 /* Google Calendar API routes */
 router.post("/google/url", getGoogleAuthURL);
+router.get("/google/callback", googleAuthCallback);
 
 /* Get timetable for a specific batch */
 router.get("/schedule/:batch", async (req, res) => {
