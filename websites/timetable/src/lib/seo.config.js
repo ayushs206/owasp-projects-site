@@ -1,5 +1,5 @@
 export const SEO_SITE_NAME = "OWASP Timetable";
-export const SEO_DEFAULT_OG_IMAGE = "/OwaspLogo.png";
+export const SEO_DEFAULT_OG_IMAGE = "/OwaspLogoYellow.png";
 
 const ENV_SITE_URL = (import.meta.env.VITE_SITE_URL || "").trim();
 
