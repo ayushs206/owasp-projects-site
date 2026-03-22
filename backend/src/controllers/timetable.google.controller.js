@@ -33,6 +33,10 @@ export const getGoogleAuthURL = async (req, res) => {
 import { handleGoogleCallback } from "../services/google.apis.js";
 
 export const googleAuthCallback = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ status: "error", message: "Query parameters are required" });
+    }
+
     const { code, state, error } = req.query;
     const frontendUrl = process.env.TIMETABLE_FRONTEND_URL || "http://localhost:3000";
 
@@ -47,6 +51,9 @@ export const googleAuthCallback = async (req, res) => {
 
     try {
         const decodedState = JSON.parse(state);
+        if (!decodedState || !decodedState.batch || !decodedState.operation) {
+            return res.redirect(`${frontendUrl}/calendar?result=fail`);
+        }
         const { batch, operation } = decodedState;
 
         await handleGoogleCallback(code, batch, operation);
