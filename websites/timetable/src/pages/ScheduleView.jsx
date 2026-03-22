@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Calendar, Download, Plus, Trash2, X, ChevronDown } 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundElements from "@/components/BackgroundElements";
+import Seo from "@/components/Seo";
 import { toPng } from 'html-to-image';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -40,6 +41,11 @@ const getTypeBadgeColors = (type) => {
 export default function ScheduleView() {
   const [searchParams] = useSearchParams();
   const batch = searchParams.get("batch");
+  const seoPath = batch ? `/schedule?batch=${encodeURIComponent(batch)}` : "/schedule";
+  const seoTitle = batch ? `${batch} Schedule` : "Schedule";
+  const seoDescription = batch
+    ? `View and edit the timetable for ${batch}, then export your schedule as a PNG.`
+    : "View and edit your timetable, then export the schedule as a PNG.";
 
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null); // original
@@ -355,6 +361,17 @@ export default function ScheduleView() {
 
   return (
     <div className="min-h-screen flex flex-col relative text-foreground w-full">
+      <Seo
+        title={seoTitle}
+        description={seoDescription}
+        path={seoPath}
+        keywords={[
+          "batch timetable",
+          "class schedule",
+          "weekly planner",
+          "timetable download",
+        ]}
+      />
       <BackgroundElements />
       <Navbar />
 

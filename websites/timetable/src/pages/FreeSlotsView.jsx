@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Users, ChevronDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundElements from "@/components/BackgroundElements";
+import Seo from "@/components/Seo";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const TIMES = [
@@ -61,6 +62,17 @@ export default function FreeSlotsView() {
 
   return (
     <div className="min-h-screen flex flex-col relative text-foreground w-full">
+      <Seo
+        title="Common Free Slots"
+        description="Compare selected batches and discover overlapping free time slots for easier planning."
+        path="/freeslots"
+        keywords={[
+          "free slots",
+          "common availability",
+          "batch comparison",
+          "student planner",
+        ]}
+      />
       <BackgroundElements />
       <Navbar />
 

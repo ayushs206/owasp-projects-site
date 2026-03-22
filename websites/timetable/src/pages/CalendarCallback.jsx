@@ -3,7 +3,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundElements from "@/components/BackgroundElements";
-import { CopyCheck, XOctagon, Loader2 } from "lucide-react";
+import Seo from "@/components/Seo";
+import { CopyCheck, XOctagon } from "lucide-react";
 
 export default function CalendarCallback() {
   const [searchParams] = useSearchParams();
@@ -17,6 +18,16 @@ export default function CalendarCallback() {
 
   return (
     <div className="min-h-screen flex flex-col relative text-foreground w-full">
+      <Seo
+        description={
+          isSuccess
+            ? "Your timetable was synced to calendar successfully."
+            : "Calendar sync could not be completed. Please retry the action."
+        }
+        path="/calendar"
+        robots="noindex, nofollow"
+        keywords={["calendar callback", "calendar sync", "schedule integration"]}
+      />
       <BackgroundElements />
       <Navbar />
 

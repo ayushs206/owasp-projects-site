@@ -2,15 +2,47 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundElements from "@/components/BackgroundElements";
+import Seo from "@/components/Seo";
+import { SEO_SITE_URL, SEO_SITE_NAME } from "@/lib/seo.config";
 
 // Temporary placeholders for our cards until we implement them
 import ScheduleCard from "@/components/ScheduleCard";
 import FreeSlotsCard from "@/components/FreeSlotsCard";
 import CalendarCard from "@/components/CalendarCard";
 
+const siteUrl = SEO_SITE_URL || "https://owasp-projects-site-timetable.vercel.app";
+
+const homeStructuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: SEO_SITE_NAME,
+      url: siteUrl,
+      inLanguage: "en",
+    },
+    {
+      "@type": "WebApplication",
+      name: SEO_SITE_NAME,
+      applicationCategory: "EducationApplication",
+      operatingSystem: "Web",
+      description:
+        "Student timetable dashboard to view schedules, find free slots, and sync calendar events.",
+      url: siteUrl,
+    },
+  ],
+};
+
 export function HomeSite() {
   return (
     <div className="min-h-screen flex flex-col relative text-foreground w-full">
+      <Seo
+        title="Thapar"
+        description="Ditch messy Excel sheets. Select your batch to view your timetable in a clean, interactive format, and instantly find common free slots with friends to plan your day smarter."
+        path="/"
+        keywords={["timetable", "schedule", "free slots", "calendar sync", "tiet", "owasp student chapter", "thapar"]}
+        structuredData={homeStructuredData}
+      />
       <BackgroundElements />
       <Navbar />
 
