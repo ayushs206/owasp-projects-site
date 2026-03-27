@@ -28,12 +28,6 @@ export default defineConfig(({ mode }) => {
         ".ngrok-free.app",
         ...allowedHosts,
       ],
-      proxy: {
-        "/api": {
-          target: env.VITE_API_URL || "http://localhost:3001",
-          changeOrigin: true,
-        },
-      },
     },
   }
 })

@@ -87,7 +87,7 @@ export default function ScheduleView() {
       setError(null);
       try {
         if (batch) {
-          const res = await fetch(`/api/v1/timetable/schedule/${encodeURIComponent(batch)}`);
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/schedule/${encodeURIComponent(batch)}`);
           if (res.ok) {
             const data = await res.json();
             const backendSchedule = data.data;

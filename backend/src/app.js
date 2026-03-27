@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 const app = express();
+app.set('trust proxy', true);
 
 const allowedOrigins = process.env.CORS_URLS
     ? process.env.CORS_URLS.split(',')
@@ -22,14 +23,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 import { limiter } from './middleware/ratelimit.js';
+app.use(limiter);
 
 /* IMPORT ROUTE FILES HERE */
 import healthRoute from './routes/health.route.js';
 import timetableRoute from './routes/timetable.route.js';
 
 /* USE ROUTES HERE */
-app.use('/api/v1/health', healthRoute);
-app.use(limiter);
+app.use('/api/v1/health', cors(), healthRoute);
 app.use('/api/v1/timetable', restrictedCors, timetableRoute);
 
 app.use((err, req, res, next) => {

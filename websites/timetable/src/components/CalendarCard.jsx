@@ -17,7 +17,7 @@ export default function CalendarCard() {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await fetch("/api/v1/timetable/batches");
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/batches`);
         if (response.ok) {
           const data = await response.json();
           const batchArray = Array.isArray(data) ? data : (data?.data || data?.batches || []);
@@ -57,7 +57,7 @@ export default function CalendarCard() {
     else setIsResetting(true);
 
     try {
-      const response = await fetch("/api/v1/timetable/google/url", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/google/url`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -15,7 +15,7 @@ export default function ScheduleCard() {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await fetch("/api/v1/timetable/batches");
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/batches`);
         if (response.ok) {
           const data = await response.json();
           const batchArray = Array.isArray(data) ? data : (data?.data || data?.batches || []);

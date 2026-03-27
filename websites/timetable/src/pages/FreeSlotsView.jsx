@@ -97,7 +97,7 @@ export default function FreeSlotsView() {
       setError(null);
       try {
         if (batches.length > 0) {
-          const res = await fetch(`/api/v1/timetable/freeslots`, {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/freeslots`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ batches }),
