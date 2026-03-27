@@ -4,7 +4,10 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors({
-    origin: '*',
+    origin: process.env.CORS_URLS ? process.env.CORS_URLS.split(',') : [
+        'http://localhost:3000',
+        'http://localhost:3001'
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
