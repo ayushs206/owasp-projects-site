@@ -23,11 +23,6 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       port: 3000,
-      allowedHosts: [
-        ".ngrok.io",
-        ".ngrok-free.app",
-        ...allowedHosts,
-      ],
     },
   }
 })
