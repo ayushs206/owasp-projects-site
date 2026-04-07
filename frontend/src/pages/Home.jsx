@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundElements from "@/components/BackgroundElements";
@@ -34,6 +34,29 @@ const homeStructuredData = {
 };
 
 export function HomeSite() {
+  const [batches, setBatches] = useState([]);
+  const [loadingBatches, setLoadingBatches] = useState(true);
+
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/batches`);
+        if (response.ok) {
+          const data = await response.json();
+          const batchArray = Array.isArray(data) ? data : (data?.data || data?.batches || []);
+          setBatches(batchArray);
+        } else {
+          setBatches([]);
+        }
+      } catch {
+        setBatches([]);
+      } finally {
+        setLoadingBatches(false);
+      }
+    };
+    fetchBatches();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col relative text-foreground w-full">
       <Seo
@@ -57,10 +80,10 @@ export function HomeSite() {
         </div>
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-          <CalendarCard />
-          <ScheduleCard />
-          <FreeSlotsCard />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full relative z-20">
+          <CalendarCard batches={batches} loadingBatches={loadingBatches} />
+          <ScheduleCard batches={batches} loading={loadingBatches} />
+          <FreeSlotsCard batches={batches} loading={loadingBatches} />
         </div>
 
         <section className="w-full mt-12 glass-card rounded-2xl p-6 md:p-8 border border-white/10">

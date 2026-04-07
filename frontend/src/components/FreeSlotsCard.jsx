@@ -2,34 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users, X, Info, ChevronDown, Check, Loader2 } from "lucide-react";
 
-export default function FreeSlotsCard() {
-  const [batches, setBatches] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function FreeSlotsCard({ batches, loading }) {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchBatches = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/batches`);
-        if (response.ok) {
-          const data = await response.json();
-          const batchArray = Array.isArray(data) ? data : (data?.data || data?.batches || []);
-          setBatches(batchArray);
-        } else {
-          setBatches([]);
-        }
-      } catch {
-        setBatches([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBatches();
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -43,11 +21,11 @@ export default function FreeSlotsCard() {
 
   const filteredBatches = Array.isArray(batches)
     ? batches.filter((b) => {
-        if (typeof b !== "string") return false;
-        const matchSearch = b.toLowerCase().includes(search.toLowerCase());
-        const isNotSelected = !selectedBatches.includes(b);
-        return matchSearch && isNotSelected;
-      })
+      if (typeof b !== "string") return false;
+      const matchSearch = b.toLowerCase().includes(search.toLowerCase());
+      const isNotSelected = !selectedBatches.includes(b);
+      return matchSearch && isNotSelected;
+    })
     : [];
 
   const handleAdd = (batch) => {
@@ -71,7 +49,7 @@ export default function FreeSlotsCard() {
   const isValidCount = selectedBatches.length >= 2 && selectedBatches.length <= 9;
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 flex flex-col relative overflow-visible group hover:border-white/20 transition-all">
+    <div className={`glass-card rounded-2xl p-6 md:p-8 flex flex-col overflow-visible group hover:border-white/20 transition-all ${isDropdownOpen ? 'z-50' : 'z-10'} relative`}>
       {/* Decorative gradient orb */}
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-fuchsia-500/10 rounded-full blur-3xl transition-all pointer-events-none" />
 
@@ -100,7 +78,7 @@ export default function FreeSlotsCard() {
           </div>
         ) : (
           <div className="flex flex-col gap-2 relative group/input" ref={dropdownRef}>
-            <div 
+            <div
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all cursor-text ${isDropdownOpen ? 'border-fuchsia-500/50 ring-2 ring-fuchsia-500/20 bg-black/40' : 'glass border-white/10'}`}
               onClick={() => setIsDropdownOpen(true)}
             >

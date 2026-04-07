@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { ChevronDown, Check, Loader2, CalendarSync } from "lucide-react";
 
-export default function CalendarCard() {
-  const [batches, setBatches] = useState([]);
-  const [loadingBatches, setLoadingBatches] = useState(true);
+export default function CalendarCard({ batches, loadingBatches }) {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -13,26 +11,6 @@ export default function CalendarCard() {
   // For the two buttons
   const [isAdding, setIsAdding] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
-
-  useEffect(() => {
-    const fetchBatches = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/batches`);
-        if (response.ok) {
-          const data = await response.json();
-          const batchArray = Array.isArray(data) ? data : (data?.data || data?.batches || []);
-          setBatches(batchArray);
-        } else {
-          setBatches([]);
-        }
-      } catch {
-        setBatches([]);
-      } finally {
-        setLoadingBatches(false);
-      }
-    };
-    fetchBatches();
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -88,7 +66,7 @@ export default function CalendarCard() {
   };
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 flex flex-col relative overflow-visible group hover:border-white/20 transition-all h-full">
+    <div className={`glass-card rounded-2xl p-6 md:p-8 flex flex-col overflow-visible group hover:border-white/20 transition-all h-full ${isDropdownOpen ? 'z-50' : 'z-10'} relative`}>
       <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl transition-all pointer-events-none" />
 
       <div className="flex items-center gap-4 mb-6 relative z-10">

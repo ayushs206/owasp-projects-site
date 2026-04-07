@@ -2,35 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, ChevronDown, Check, Loader2 } from "lucide-react";
 
-export default function ScheduleCard() {
-  const [batches, setBatches] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function ScheduleCard({ batches, loading }) {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [selectedType] = useState("All");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchBatches = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/timetable/batches`);
-        if (response.ok) {
-          const data = await response.json();
-          const batchArray = Array.isArray(data) ? data : (data?.data || data?.batches || []);
-          setBatches(batchArray);
-        } else {
-          setBatches([]);
-        }
-      } catch {
-        setBatches([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBatches();
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -58,7 +36,7 @@ export default function ScheduleCard() {
   };
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 flex flex-col relative overflow-visible group hover:border-white/20 transition-all">
+    <div className={`glass-card rounded-2xl p-6 md:p-8 flex flex-col overflow-visible group hover:border-white/20 transition-all ${isDropdownOpen ? 'z-50' : 'z-10'} relative`}>
       <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl transition-all pointer-events-none" />
 
       <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -80,7 +58,7 @@ export default function ScheduleCard() {
         ) : (
           <div className="flex flex-col gap-2 relative group/input pt-2" ref={dropdownRef}>
             <label className="text-sm font-medium text-white/70">Select your batch</label>
-            <div 
+            <div
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all cursor-text ${isDropdownOpen ? 'border-rose-500/50 ring-2 ring-rose-500/20 bg-black/40' : 'glass border-white/10'}`}
               onClick={() => setIsDropdownOpen(true)}
             >
